@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import torch
+import subprocess
+from pathlib import Path
+import argparse
+
+
+
+possible_scripts = {
+    "train":"train yolov7",
+    "detect":"detect objects in a source image using yolov7 weights",
+    "chkpt":"download or clean up a checkpoint",
+    "data-prep":"prepare data for use"
+}
+possible_scripts_str = '\n'.join([f"\t{k:9}: {v}" for k,v in possible_scripts.items()])
+usage = f"\nusage: ./main.py <script>\n\npossible scripts:\n{possible_scripts_str}"
+
+
+if __name__=="__main__":
+    # extract command
+    command = ["python"]+sys.argv[1:]
+    yolov7_scripts = ["train.py","detect.py"]
+    sys.path
+    
+    # create paths
+    base_path = Path(os.getcwd())
+    yolov7_path = base_path/"yolov7"
+    
+    # commands
+    if len(command) > 1:
+        # run a yolov7 script
+        if command[1] in yolov7_scripts:
+            
+            # ensure that yolov7 is cloned
+            if not (yolov7_path.exists() and yolov7_path.is_dir()):
+                subprocess.Popen(["make","yolov7-clean"]).wait()
+                subprocess.Popen(["make","yolov7-clone"]).wait()
+                
+            os.chdir("yolov7")
+            print(f"In the directory, {os.getcwd()}")
+            print(f"Runing command: {command}")
+            subprocess.Popen(command).wait()
+        
+        # checkpoint
+        elif command[1] == "chkpt.py":
+            command[1] = "./scripts/chkpt.py"
+            subprocess.Popen(command).wait()
+                        
+        # data prep
+        elif command[1] == "data-prep.py":
+            command[1] = "./scripts/data-prep.py"
+            subprocess.Popen(command).wait()
+            
+        else:
+            print(f"Invalid script, '{command[1]}', for command ./main.py\n{usage}")
+            
+    else:
+        print(f"Nothing to run\n{usage}")
+

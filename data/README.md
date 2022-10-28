@@ -1,0 +1,2 @@
+# Data
+Download the data files from the zindi competition ([here](https://zindi.africa/competitions/wadhwani-ai-bollworm-counting-challenge/data)) and move them into this folder, then from the base directory, run `./main data-prep` to prepare the data for training.

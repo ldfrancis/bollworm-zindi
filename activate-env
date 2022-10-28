@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+
+export PYTHONPATH=./yolov7:.
+
+conda env list | grep bollworm-zindi
+
+if [ $? -ne 0 ]; then
+    make conda-update
+    source activate bollworm-zindi
+    make pip-update
+fi
+
+source activate bollworm-zindi
+
